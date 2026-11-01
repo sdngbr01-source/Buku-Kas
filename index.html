@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buku Kas - Mahardika</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #6dd5ed 100%);
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+    overflow: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(120deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    color: #fff;
+    padding: 28px 30px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .header::after {
+    content: '💰';
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 70px;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+  .header-text h1 { font-size: 24px; margin-bottom: 6px; letter-spacing: 0.3px; position: relative; z-index: 2; }
+  .header-text h1 span { color: #6dd5ed; }
+  .header-text p { opacity: 0.85; font-size: 14px; position: relative; z-index: 2; }
+  .header-actions { position: relative; z-index: 2; }
+  .btn-login {
+    background: linear-gradient(135deg, #00b894, #00cec9);
+    color: #fff; padding: 10px 22px; border: none; border-radius: 25px;
+    font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(0,206,201,0.4);
+  }
+  .btn-login:hover { transform: translateY(-2px); box-shadow: 0 7px 20px rgba(0,206,201,0.55); }
+  .user-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.12); padding: 8px 16px; border-radius: 25px;
+    font-size: 13px; border: 1px solid rgba(255,255,255,0.25);
+  }
+  .btn-logout {
+    background: rgba(255,255,255,0.15); color: #fff; padding: 5px 12px; font-size: 12px;
+    border: 1px solid rgba(255,255,255,0.3); margin-left: 8px; border-radius: 20px;
+    cursor: pointer; font-weight: 600; transition: background 0.2s;
+  }
+  .btn-logout:hover { background: rgba(255,255,255,0.3); }
+
+  /* SUMMARY CARDS */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    padding: 25px 30px;
+    background: #f4f7fb;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .summary-card {
+    background: #fff;
+    padding: 22px 24px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .summary-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+  .summary-card .icon {
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    font-size: 38px;
+    opacity: 0.16;
+  }
+  .summary-card.masuk { border-left: 5px solid #00b894; }
+  .summary-card.keluar { border-left: 5px solid #e17055; }
+  .summary-card.saldo { border-left: 5px solid #fdcb6e; }
+  .summary-card label { font-size: 12px; color: #777; text-transform: uppercase; letter-spacing: 0.7px; font-weight: 700; }
+  .summary-card .value { font-size: 25px; font-weight: 800; margin-top: 6px; }
+  .summary-card.masuk .value { color: #00b894; }
+  .summary-card.keluar .value { color: #e17055; }
+  .summary-card.saldo .value { color: #d68910; }
+  .summary-card .sub { font-size: 11px; color: #999; margin-top: 5px; }
+
+  /* LOGIN MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(15,32,39,0.75);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999; padding: 20px; backdrop-filter: blur(4px);
+  }
+  .modal-box {
+    background: #fff; border-radius: 16px; padding: 35px 30px;
+    max-width: 400px; width: 100%; text-align: center;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+    animation: popIn 0.25s ease;
+  }
+  @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-box h2 { font-size: 20px; color: #2c3e50; margin-bottom: 6px; }
+  .modal-box p { color: #888; font-size: 13px; margin-bottom: 22px; }
+  .modal-box input {
+    width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0;
+    border-radius: 10px; font-size: 16px; text-align: center;
+    letter-spacing: 1px; transition: border 0.2s; margin-bottom: 12px;
+  }
+  .modal-box input:focus { outline: none; border-color: #2a5298; }
+  .login-error { color: #e17055; font-size: 13px; min-height: 18px; margin-bottom: 12px; font-weight: 600; }
+  .modal-btns { display: flex; gap: 10px; }
+  .btn { padding: 11px 20px; border: none; border-radius: 9px; cursor: pointer; font-size: 14px; font-weight: 700; transition: all 0.2s; }
+  .btn-primary { background: linear-gradient(135deg, #2a5298 0%, #6dd5ed 100%); color: #fff; flex: 1; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(42,82,152,0.4); }
+  .btn-cancel { background: #dfe6e9; color: #2d3436; flex: 1; }
+  .btn-cancel:hover { background: #b2bec3; }
+
+  /* FORM */
+  .form-section {
+    padding: 25px 30px;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .form-section h2 { font-size: 16px; color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+  .edit-tag { background: #fdcb6e; color: #6b4e00; font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 700; }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  /* URAIAN lebih lebar */
+  .form-grid .uraian-field { grid-column: span 2; }
+  .form-grid input, .form-grid select {
+    padding: 11px 13px; border: 1px solid #ddd; border-radius: 9px;
+    font-size: 14px; transition: border 0.2s, box-shadow 0.2s; background: #fbfcfe;
+    width: 100%;
+  }
+  .form-grid input:focus, .form-grid select:focus {
+    outline: none; border-color: #2a5298;
+    box-shadow: 0 0 0 3px rgba(42,82,152,0.12); background: #fff;
+  }
+  .btn-submit {
+    background: linear-gradient(135deg, #2a5298 0%, #6dd5ed 100%);
+    color: #fff; width: 100%; padding: 11px 20px; border: none; border-radius: 9px;
+    cursor: pointer; font-size: 14px; font-weight: 700; transition: all 0.2s;
+  }
+  .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(42,82,152,0.4); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .btn-cancel-edit { background: #dfe6e9; color: #2d3436; padding: 11px 20px; border: none; border-radius: 9px; cursor: pointer; font-size: 14px; font-weight: 700; }
+  .btn-cancel-edit:hover { background: #b2bec3; }
+
+  /* TABLE */
+  .table-section { padding: 20px 30px 30px; }
+  .table-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 15px; flex-wrap: wrap; gap: 10px;
+  }
+  .table-header h2 { font-size: 16px; color: #2c3e50; }
+  .table-header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .status { font-size: 13px; padding: 6px 14px; border-radius: 20px; font-weight: 600; }
+  .status.loading { background: #fff3cd; color: #856404; }
+  .status.ok { background: #d4edda; color: #155724; }
+  .status.error { background: #f8d7da; color: #721c24; }
+  .btn-toggle-all {
+    background: #eef2f7; color: #2a5298; padding: 6px 14px; font-size: 12px;
+    border: 1px solid #c9d6e8; border-radius: 20px; cursor: pointer; font-weight: 700;
+  }
+  .btn-toggle-all:hover { background: #dbe6f5; }
+
+  /* Desktop table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead { background: #eef2f7; }
+  th {
+    padding: 13px 10px; text-align: left; font-weight: 700; color: #4a5568;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  td { padding: 11px 10px; border-bottom: 1px solid #eef2f7; color: #333; }
+  tbody tr:hover { background: #f7fafd; }
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+  .masuk-text { color: #00b894; font-weight: 700; }
+  .keluar-text { color: #e17055; font-weight: 700; }
+  .saldo-text { color: #d68910; font-weight: 700; }
+  .empty-state { text-align: center; padding: 45px; color: #999; }
+
+  .btn-edit { background: #ffeaa7; color: #6b4e00; padding: 6px 12px; font-size: 12px; margin-right: 5px; border: none; border-radius: 7px; cursor: pointer; font-weight: 700; }
+  .btn-edit:hover { background: #fdcb6e; }
+  .btn-danger { background: #e17055; color: #fff; padding: 6px 12px; font-size: 12px; border: none; border-radius: 7px; cursor: pointer; font-weight: 700; }
+  .btn-danger:hover { background: #d63031; }
+
+  .hidden { display: none !important; }
+
+  /* ===== MOBILE CARD LAYOUT ===== */
+  .mobile-cards { display: none; }
+
+  @media (max-width: 768px) {
+    body { padding: 10px; }
+    .header { padding: 20px 16px; }
+    .header-text h1 { font-size: 17px; line-height: 1.35; }
+    .header-text p { font-size: 12px; }
+    .summary { padding: 16px; gap: 12px; grid-template-columns: 1fr 1fr; }
+    .summary-card { padding: 16px; }
+    .summary-card .value { font-size: 18px; }
+    .summary-card .sub { font-size: 10px; }
+    .summary-card .icon { font-size: 28px; right: 12px; top: 12px; }
+    .form-section { padding: 18px 16px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid .uraian-field { grid-column: span 1; }
+    .table-section { padding: 16px; }
+    .table-header h2 { font-size: 14px; }
+
+    /* Sembunyikan tabel desktop, pakai card */
+    .table-wrap { display: none; }
+    .mobile-cards { display: flex; flex-direction: column; gap: 12px; }
+
+    .tx-card {
+      background: #fff;
+      border: 1px solid #e4eaf2;
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .tx-card-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 10px; margin-bottom: 8px;
+    }
+    .tx-card-no {
+      background: #eef2f7; color: #4a5568; font-size: 11px; font-weight: 700;
+      padding: 3px 9px; border-radius: 10px; flex-shrink: 0;
+    }
+    .tx-card-date { font-size: 12px; color: #888; font-weight: 600; }
+    .tx-card-uraian {
+      font-size: 15px; font-weight: 700; color: #2c3e50;
+      margin-bottom: 6px; word-break: break-word;
+    }
+    .tx-card-pj { font-size: 12px; color: #888; margin-bottom: 10px; }
+    .tx-card-amounts {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      padding-top: 10px; border-top: 1px dashed #e4eaf2;
+    }
+    .tx-amt label { display: block; font-size: 10px; text-transform: uppercase; color: #999; font-weight: 700; letter-spacing: .4px; margin-bottom: 2px; }
+    .tx-amt .val { font-size: 14px; font-weight: 800; }
+    .tx-amt.masuk .val { color: #00b894; }
+    .tx-amt.keluar .val { color: #e17055; }
+    .tx-card-saldo {
+      margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e4eaf2;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .tx-card-saldo span { font-size: 12px; font-weight: 700; color: #777; text-transform: uppercase; letter-spacing: .4px; }
+    .tx-card-saldo strong { font-size: 16px; color: #d68910; }
+    .tx-card-actions { margin-top: 10px; display: flex; gap: 8px; }
+    .tx-card-actions button { flex: 1; padding: 9px; font-size: 13px; }
+    .tx-card-actions .lock { flex: 1; text-align: center; color: #aaa; font-size: 13px; padding: 9px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-text">
+      <h1>📒 Catatan Pengeluaran dan Pemasukan <br>atas nama <span>Mahardika</span></h1>
+      <p>Buku Kas Digital · Terintegrasi Google Spreadsheet</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-login" id="btnLoginHeader" onclick="openLogin()">🔐 Login Admin</button>
+      <div id="userInfo" class="hidden">
+        <span class="user-badge">
+          👤 198908062022211001
+          <button class="btn-logout" onclick="logout()">Logout</button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary">
+    <div class="summary-card masuk">
+      <span class="icon">📥</span>
+      <label>Total Pemasukan</label>
+      <div class="value" id="totalMasuk">Rp 0</div>
+      <div class="sub" id="countMasuk">0 transaksi</div>
+    </div>
+    <div class="summary-card keluar">
+      <span class="icon">📤</span>
+      <label>Total Pengeluaran</label>
+      <div class="value" id="totalKeluar">Rp 0</div>
+      <div class="sub" id="countKeluar">0 transaksi</div>
+    </div>
+    <div class="summary-card saldo">
+      <span class="icon">💎</span>
+      <label>Saldo Akhir</label>
+      <div class="value" id="totalSaldo">Rp 0</div>
+      <div class="sub" id="countTotal">0 transaksi</div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-section hidden" id="formSection">
+    <h2 id="formTitle">➕ Tambah Transaksi <span id="editTag" class="edit-tag hidden">Mode Edit</span></h2>
+    <form id="formKas" class="form-grid">
+      <input type="hidden" id="editId">
+      <input type="date" id="tanggal" required>
+      <input type="text" id="uraian" class="uraian-field" placeholder="Uraian" required>
+      <select id="jenis" required>
+        <option value="">-- Jenis --</option>
+        <option value="masuk">Pemasukan</option>
+        <option value="keluar">Pengeluaran</option>
+      </select>
+      <input type="number" id="jumlah" placeholder="Jumlah (Rp)" min="0" required>
+      <input type="text" id="pj" placeholder="PJ (Penanggung Jawab)" required>
+      <button type="submit" class="btn-submit" id="btnSubmit">Simpan</button>
+      <button type="button" class="btn-cancel-edit hidden" id="btnCancelEdit" onclick="cancelEdit()">Batal Edit</button>
+    </form>
+  </div>
+
+  <!-- Info login -->
+  <div class="form-section" id="loginHint" style="background:#f8f9fa; text-align:center; color:#666; font-size:14px;">
+    🔒 Ingin menambah, mengedit, atau menghapus transaksi? Silakan <a href="#" onclick="openLogin(); return false;" style="color:#2a5298; font-weight:700; text-decoration:underline;">login sebagai admin</a>.
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-section">
+    <div class="table-header">
+      <h2>📋 Riwayat Transaksi</h2>
+      <div class="table-header-right">
+        <button class="btn-toggle-all hidden" id="btnToggleAll" onclick="toggleShowAll()">Lihat Semua</button>
+        <span class="status loading" id="status">Menghubungkan...</span>
+      </div>
+    </div>
+
+    <!-- Desktop table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Tanggal</th>
+            <th>Uraian</th>
+            <th class="text-right">Pemasukan</th>
+            <th class="text-right">Pengeluaran</th>
+            <th class="text-right">Saldo</th>
+            <th>PJ</th>
+            <th class="text-center" id="aksiHeader">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="8" class="empty-state">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile cards -->
+    <div class="mobile-cards" id="mobileCards">
+      <div class="empty-state">Memuat data...</div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay hidden" id="loginModal">
+  <div class="modal-box">
+    <h2>🔐 Login Admin</h2>
+    <p>Masukkan NIP untuk mengelola transaksi</p>
+    <input type="text" id="loginInput" placeholder="Masukkan NIP" autocomplete="off">
+    <div class="login-error" id="loginError"></div>
+    <div class="modal-btns">
+      <button class="btn btn-cancel" onclick="closeLogin()">Batal</button>
+      <button class="btn btn-primary" onclick="doLogin()">Masuk</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================
+// KONFIGURASI
+// ============================================
+const API_URL = 'https://script.google.com/macros/s/AKfycbwbPBZcTrRhGk3-my4BgcGi2kpIGQulY2UgcrmYZhftsiyyhTAUpcYZ1rbPFIlEhRKi9w/exec';
+const VALID_NIP = '198908062022211001';
+const INITIAL_LIMIT = 5; // jumlah transaksi awal yang ditampilkan
+
+// ============================================
+// STATE
+// ============================================
+let dataKas = [];       // semua data dari API
+let isLoggedIn = false;
+let showAll = false;    // false = hanya 5 terbaru, true = semua
+
+// ============================================
+// UTILITY
+// ============================================
+const formatRupiah = (num) => {
+  const n = Number(num) || 0;
+  if (n === 0) return 'Rp 0';
+  return 'Rp ' + n.toLocaleString('id-ID');
+};
+
+const formatTanggal = (str) => {
+  if (!str) return '-';
+  try {
+    const d = new Date(str);
+    if (isNaN(d)) return str;
+    return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+  } catch { return str; }
+};
+
+const setStatus = (text, type) => {
+  const el = document.getElementById('status');
+  el.textContent = text;
+  el.className = 'status ' + type;
+};
+
+// Ambil nilai tanggal sebagai angka untuk sorting
+const tanggalValue = (item) => {
+  const t = new Date(item.tanggal);
+  return isNaN(t) ? 0 : t.getTime();
+};
+
+// Data terurut terbaru dulu (Z-A / tanggal terbaru di atas)
+function getSortedData() {
+  return [...dataKas].sort((a, b) => tanggalValue(b) - tanggalValue(a));
+}
+
+// Data yang ditampilkan sesuai mode
+function getVisibleData() {
+  const sorted = getSortedData();
+  return showAll ? sorted : sorted.slice(0, INITIAL_LIMIT);
+}
+
+// ============================================
+// LOGIN / LOGOUT
+// ============================================
+function openLogin() {
+  document.getElementById('loginModal').classList.remove('hidden');
+  document.getElementById('loginInput').value = '';
+  document.getElementById('loginError').textContent = '';
+  setTimeout(() => document.getElementById('loginInput').focus(), 100);
+}
+
+function closeLogin() {
+  document.getElementById('loginModal').classList.add('hidden');
+}
+
+function doLogin() {
+  const input = document.getElementById('loginInput').value.trim();
+  const errorEl = document.getElementById('loginError');
+  if (input === VALID_NIP) {
+    isLoggedIn = true;
+    closeLogin();
+    applyLoginState();
+    loadData();
+  } else {
+    errorEl.textContent = '❌ NIP salah. Silakan coba lagi.';
+  }
+}
+
+function logout() {
+  isLoggedIn = false;
+  cancelEdit();
+  applyLoginState();
+  renderTable();
+}
+
+function applyLoginState() {
+  const btnLogin = document.getElementById('btnLoginHeader');
+  const userInfo = document.getElementById('userInfo');
+  const formSection = document.getElementById('formSection');
+  const loginHint = document.getElementById('loginHint');
+
+  if (isLoggedIn) {
+    btnLogin.classList.add('hidden');
+    userInfo.classList.remove('hidden');
+    formSection.classList.remove('hidden');
+    loginHint.classList.add('hidden');
+    document.getElementById('tanggal').valueAsDate = new Date();
+  } else {
+    btnLogin.classList.remove('hidden');
+    userInfo.classList.add('hidden');
+    formSection.classList.add('hidden');
+    loginHint.classList.remove('hidden');
+  }
+}
+
+document.getElementById('loginInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') doLogin();
+});
+document.getElementById('loginModal').addEventListener('click', (e) => {
+  if (e.target.id === 'loginModal') closeLogin();
+});
+
+// ============================================
+// LOAD DATA
+// ============================================
+async function loadData() {
+  setStatus('Memuat data...', 'loading');
+  try {
+    const res = await fetch(`${API_URL}?action=get`);
+    const json = await res.json();
+    if (json.status === 'success') {
+      dataKas = json.data || [];
+      renderTable();
+      setStatus(`✓ ${dataKas.length} transaksi`, 'ok');
+    } else {
+      throw new Error(json.message || 'Gagal memuat');
+    }
+  } catch (err) {
+    console.error(err);
+    setStatus('⚠ Gagal terhubung', 'error');
+    document.getElementById('tbody').innerHTML =
+      `<tr><td colspan="8" class="empty-state">Gagal memuat data. Periksa konfigurasi API.<br><small>${err.message}</small></td></tr>`;
+    document.getElementById('mobileCards').innerHTML =
+      `<div class="empty-state">Gagal memuat data.<br><small>${err.message}</small></div>`;
+  }
+}
+
+// ============================================
+// SIMPAN / UPDATE
+// ============================================
+async function simpanTransaksi(transaksi, editId) {
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true;
+  btn.textContent = editId ? 'Memperbarui...' : 'Menyimpan...';
+
+  try {
+    const body = editId
+      ? { action: 'update', id: editId, data: transaksi }
+      : { action: 'add', data: transaksi };
+
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(body)
+    });
+    const json = await res.json();
+
+    if (json.status === 'success') {
+      await loadData();
+      cancelEdit();
+      document.getElementById('formKas').reset();
+      document.getElementById('tanggal').valueAsDate = new Date();
+    } else {
+      alert('Gagal menyimpan: ' + (json.message || 'Error'));
+    }
+  } catch (err) {
+    alert('Gagal menyimpan: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Simpan';
+  }
+}
+
+// ============================================
+// HAPUS
+// ============================================
+async function hapusTransaksi(id) {
+  if (!confirm('Yakin ingin menghapus transaksi ini? Saldo akan dihitung ulang.')) return;
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'delete', id })
+    });
+    const json = await res.json();
+    if (json.status === 'success') {
+      await loadData();
+    } else {
+      alert('Gagal menghapus: ' + (json.message || 'Error'));
+    }
+  } catch (err) {
+    alert('Gagal menghapus: ' + err.message);
+  }
+}
+
+// ============================================
+// EDIT
+// ============================================
+function editTransaksi(id) {
+  if (!isLoggedIn) { openLogin(); return; }
+  const item = dataKas.find(t => String(t.id) === String(id));
+  if (!item) return;
+
+  document.getElementById('editId').value = id;
+  document.getElementById('tanggal').value = item.tanggal || '';
+  document.getElementById('uraian').value = item.uraian || '';
+  const pemasukan = Number(item.pemasukan) || 0;
+  const pengeluaran = Number(item.pengeluaran) || 0;
+  document.getElementById('jenis').value = pemasukan > 0 ? 'masuk' : 'keluar';
+  document.getElementById('jumlah').value = pemasukan > 0 ? pemasukan : pengeluaran;
+  document.getElementById('pj').value = item.pj || '';
+
+  document.getElementById('formTitle').innerHTML = '✏️ Edit Transaksi <span class="edit-tag">Mode Edit</span>';
+  document.getElementById('btnCancelEdit').classList.remove('hidden');
+  document.getElementById('btnSubmit').textContent = 'Perbarui';
+  document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function cancelEdit() {
+  document.getElementById('editId').value = '';
+  document.getElementById('formKas').reset();
+  document.getElementById('tanggal').valueAsDate = new Date();
+  document.getElementById('formTitle').innerHTML = '➕ Tambah Transaksi <span id="editTag" class="edit-tag hidden">Mode Edit</span>';
+  document.getElementById('btnCancelEdit').classList.add('hidden');
+  document.getElementById('btnSubmit').textContent = 'Simpan';
+}
+
+// ============================================
+// TOGGLE LIHAT SEMUA / RINGKAS
+// ============================================
+function toggleShowAll() {
+  showAll = !showAll;
+  renderTable();
+}
+
+// ============================================
+// RENDER (desktop table + mobile cards)
+// ============================================
+function renderTable() {
+  const tbody = document.getElementById('tbody');
+  const mobileCards = document.getElementById('mobileCards');
+  const aksiHeader = document.getElementById('aksiHeader');
+  const btnToggleAll = document.getElementById('btnToggleAll');
+
+  if (isLoggedIn) {
+    aksiHeader.classList.remove('hidden');
+  } else {
+    aksiHeader.classList.add('hidden');
+  }
+
+  // Tombol "Lihat Semua" hanya muncul jika data > INITIAL_LIMIT
+  if (dataKas.length > INITIAL_LIMIT) {
+    btnToggleAll.classList.remove('hidden');
+    btnToggleAll.textContent = showAll
+      ? `Tampilkan ${INITIAL_LIMIT} Terbaru`
+      : `Lihat Semua (${dataKas.length})`;
+  } else {
+    btnToggleAll.classList.add('hidden');
+  }
+
+  if (!dataKas.length) {
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Belum ada transaksi.</td></tr>`;
+    mobileCards.innerHTML = `<div class="empty-state">Belum ada transaksi.</div>`;
+    document.getElementById('totalMasuk').textContent = 'Rp 0';
+    document.getElementById('totalKeluar').textContent = 'Rp 0';
+    document.getElementById('totalSaldo').textContent = 'Rp 0';
+    document.getElementById('countMasuk').textContent = '0 transaksi';
+    document.getElementById('countKeluar').textContent = '0 transaksi';
+    document.getElementById('countTotal').textContent = '0 transaksi';
+    return;
+  }
+
+  // ===== Hitung summary dari SEMUA data =====
+  let totalMasuk = 0, totalKeluar = 0, countMasuk = 0, countKeluar = 0;
+  dataKas.forEach(item => {
+    const masuk = Number(item.pemasukan) || 0;
+    const keluar = Number(item.pengeluaran) || 0;
+    totalMasuk += masuk;
+    totalKeluar += keluar;
+    if (masuk > 0) countMasuk++;
+    if (keluar > 0) countKeluar++;
+  });
+
+  // Saldo akhir diambil dari data terbaru (sorted) atau saldo terakhir di data
+  const sortedAll = getSortedData();
+  const lastSaldo = Number(sortedAll[0]?.saldo || sortedAll[0]?.Saldo) || 0;
+
+  document.getElementById('totalMasuk').textContent = formatRupiah(totalMasuk);
+  document.getElementById('totalKeluar').textContent = formatRupiah(totalKeluar);
+  document.getElementById('totalSaldo').textContent = formatRupiah(lastSaldo);
+  document.getElementById('countMasuk').textContent
+  document.getElementById('countMasuk').textContent = countMasuk + ' transaksi';
+  document.getElementById('countKeluar').textContent = countKeluar + ' transaksi';
+  document.getElementById('countTotal').textContent = dataKas.length + ' transaksi';
+
+  // ===== Render desktop table =====
+  const visible = getVisibleData();
+  let rows = '';
+
+  visible.forEach((item, idx) => {
+    const masuk = Number(item.pemasukan) || 0;
+    const keluar = Number(item.pengeluaran) || 0;
+    const saldo = Number(item.saldo) || Number(item.Saldo) || 0;
+
+    rows += `
+      <tr>
+        <td class="text-center">${idx + 1}</td>
+        <td>${formatTanggal(item.tanggal)}</td>
+        <td>${item.uraian || '-'}</td>
+        <td class="text-right ${masuk ? 'masuk-text' : ''}">${masuk ? formatRupiah(masuk) : '-'}</td>
+        <td class="text-right ${keluar ? 'keluar-text' : ''}">${keluar ? formatRupiah(keluar) : '-'}</td>
+        <td class="text-right saldo-text">${formatRupiah(saldo)}</td>
+        <td>${item.pj || '-'}</td>
+        <td class="text-center">
+          ${isLoggedIn ? `
+            <button class="btn-edit" onclick="editTransaksi('${item.id}')">Edit</button>
+            <button class="btn-danger" onclick="hapusTransaksi('${item.id}')">Hapus</button>
+          ` : '🔒'}
+        </td>
+      </tr>`;
+  });
+
+  tbody.innerHTML = rows;
+
+  // ===== Render mobile cards =====
+  let cards = '';
+  visible.forEach((item, idx) => {
+    const masuk = Number(item.pemasukan) || 0;
+    const keluar = Number(item.pengeluaran) || 0;
+    const saldo = Number(item.saldo) || Number(item.Saldo) || 0;
+
+    cards += `
+      <div class="tx-card">
+        <div class="tx-card-top">
+          <span class="tx-card-no">#${idx + 1}</span>
+          <span class="tx-card-date">📅 ${formatTanggal(item.tanggal)}</span>
+        </div>
+        <div class="tx-card-uraian">${item.uraian || '-'}</div>
+        <div class="tx-card-pj">👤 PJ: ${item.pj || '-'}</div>
+        <div class="tx-card-amounts">
+          <div class="tx-amt masuk">
+            <label>Pemasukan</label>
+            <div class="val">${masuk ? formatRupiah(masuk) : '-'}</div>
+          </div>
+          <div class="tx-amt keluar">
+            <label>Pengeluaran</label>
+            <div class="val">${keluar ? formatRupiah(keluar) : '-'}</div>
+          </div>
+        </div>
+        <div class="tx-card-saldo">
+          <span>Saldo</span>
+          <strong>${formatRupiah(saldo)}</strong>
+        </div>
+        <div class="tx-card-actions">
+          ${isLoggedIn ? `
+            <button class="btn-edit" onclick="editTransaksi('${item.id}')">Edit</button>
+            <button class="btn-danger" onclick="hapusTransaksi('${item.id}')">Hapus</button>
+          ` : '<span class="lock">🔒 Login untuk kelola</span>'}
+        </div>
+      </div>`;
+  });
+
+  mobileCards.innerHTML = cards;
+}
+
+// ============================================
+// FORM SUBMIT
+// ============================================
+document.getElementById('formKas').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!isLoggedIn) { openLogin(); return; }
+
+  const editId = document.getElementById('editId').value;
+  const tanggal = document.getElementById('tanggal').value;
+  const uraian = document.getElementById('uraian').value.trim();
+  const jenis = document.getElementById('jenis').value;
+  const jumlah = Number(document.getElementById('jumlah').value);
+  const pj = document.getElementById('pj').value.trim();
+
+  if (!tanggal || !uraian || !jenis || !jumlah || !pj) {
+    alert('Semua field wajib diisi!');
+    return;
+  }
+
+  const transaksi = {
+    tanggal,
+    uraian,
+    pemasukan: jenis === 'masuk' ? jumlah : 0,
+    pengeluaran: jenis === 'keluar' ? jumlah : 0,
+    pj
+  };
+
+  await simpanTransaksi(transaksi, editId || null);
+});
+
+// ============================================
+// INIT
+// ============================================
+applyLoginState();
+loadData();
+</script>
+</body>
+</html>
