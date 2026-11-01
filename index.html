@@ -397,14 +397,14 @@
 // ============================================
 const API_URL = 'https://script.google.com/macros/s/AKfycbwbPBZcTrRhGk3-my4BgcGi2kpIGQulY2UgcrmYZhftsiyyhTAUpcYZ1rbPFIlEhRKi9w/exec';
 const VALID_NIP = '198908062022211001';
-const INITIAL_LIMIT = 5; // jumlah transaksi awal yang ditampilkan
+const INITIAL_LIMIT = 5;
 
 // ============================================
 // STATE
 // ============================================
-let dataKas = [];       // semua data dari API
+let dataKas = [];
 let isLoggedIn = false;
-let showAll = false;    // false = hanya 5 terbaru, true = semua
+let showAll = false;
 
 // ============================================
 // UTILITY
@@ -415,13 +415,39 @@ const formatRupiah = (num) => {
   return 'Rp ' + n.toLocaleString('id-ID');
 };
 
+// Parser tanggal aman: Date, ISO (YYYY-MM-DD), DD/MM/YYYY, DD-MM-YYYY
+function parseTanggal(v) {
+  if (!v) return 0;
+  if (v instanceof Date) {
+    const t = v.getTime();
+    return isNaN(t) ? 0 : t;
+  }
+  const s = String(v).trim();
+
+  // ISO: 2024-12-01 atau 2024-12-01T...
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+    const t = new Date(s).getTime();
+    return isNaN(t) ? 0 : t;
+  }
+
+  // DD/MM/YYYY atau DD-MM-YYYY (default Indonesia)
+  const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+  if (m) {
+    let [, d, mo, y] = m;
+    if (y.length === 2) y = '20' + y;
+    const t = new Date(+y, +mo - 1, +d).getTime();
+    return isNaN(t) ? 0 : t;
+  }
+
+  const t = new Date(s).getTime();
+  return isNaN(t) ? 0 : t;
+}
+
 const formatTanggal = (str) => {
   if (!str) return '-';
-  try {
-    const d = new Date(str);
-    if (isNaN(d)) return str;
-    return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-  } catch { return str; }
+  const t = parseTanggal(str);
+  if (!t) return String(str);
+  return new Date(t).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
 };
 
 const setStatus = (text, type) => {
@@ -430,15 +456,59 @@ const setStatus = (text, type) => {
   el.className = 'status ' + type;
 };
 
-// Ambil nilai tanggal sebagai angka untuk sorting
-const tanggalValue = (item) => {
-  const t = new Date(item.tanggal);
-  return isNaN(t) ? 0 : t.getTime();
-};
+// ============================================
+// SORT & HITUNG SALDO (DI JS)
+// ============================================
 
-// Data terurut terbaru dulu (Z-A / tanggal terbaru di atas)
+// Urutkan kronologis: terlama → terbaru
+function getChronological() {
+  return [...dataKas].sort((a, b) => {
+    const ta = parseTanggal(a.tanggal);
+    const tb = parseTanggal(b.tanggal);
+    if (ta !== tb) return ta - tb;
+    // tie-breaker supaya urutan stabil kalau tanggal sama
+    return String(a.id || '').localeCompare(String(b.id || ''));
+  });
+}
+
+// Data tampilan: terbaru → terlama
 function getSortedData() {
-  return [...dataKas].sort((a, b) => tanggalValue(b) - tanggalValue(a));
+  return getChronological().reverse();
+}
+
+// Hitung saldo berjalan + summary. Abaikan kolom saldo dari sheet.
+function computeSummary() {
+  const chrono = getChronological();
+
+  let running = 0;
+  let totalMasuk = 0;
+  let totalKeluar = 0;
+  let countMasuk = 0;
+  let countKeluar = 0;
+  const saldoMap = new Map();
+
+  chrono.forEach(item => {
+    const masuk = Number(item.pemasukan) || 0;
+    const keluar = Number(item.pengeluaran) || 0;
+
+    totalMasuk += masuk;
+    totalKeluar += keluar;
+    if (masuk > 0) countMasuk++;
+    if (keluar > 0) countKeluar++;
+
+    running += masuk - keluar;
+    saldoMap.set(String(item.id), running);
+  });
+
+  return {
+    saldoMap,
+    finalSaldo: running,
+    totalMasuk,
+    totalKeluar,
+    countMasuk,
+    countKeluar,
+    countTotal: chrono.length
+  };
 }
 
 // Data yang ditampilkan sesuai mode
@@ -600,7 +670,19 @@ function editTransaksi(id) {
   if (!item) return;
 
   document.getElementById('editId').value = id;
-  document.getElementById('tanggal').value = item.tanggal || '';
+
+  // Set tanggal ke format YYYY-MM-DD untuk input[type=date]
+  const t = parseTanggal(item.tanggal);
+  if (t) {
+    const d = new Date(t);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    document.getElementById('tanggal').value = `${yyyy}-${mm}-${dd}`;
+  } else {
+    document.getElementById('tanggal').value = '';
+  }
+
   document.getElementById('uraian').value = item.uraian || '';
   const pemasukan = Number(item.pemasukan) || 0;
   const pengeluaran = Number(item.pengeluaran) || 0;
@@ -646,7 +728,7 @@ function renderTable() {
     aksiHeader.classList.add('hidden');
   }
 
-  // Tombol "Lihat Semua" hanya muncul jika data > INITIAL_LIMIT
+  // Tombol "Lihat Semua"
   if (dataKas.length > INITIAL_LIMIT) {
     btnToggleAll.classList.remove('hidden');
     btnToggleAll.textContent = showAll
@@ -656,6 +738,7 @@ function renderTable() {
     btnToggleAll.classList.add('hidden');
   }
 
+  // Empty state
   if (!dataKas.length) {
     tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Belum ada transaksi.</td></tr>`;
     mobileCards.innerHTML = `<div class="empty-state">Belum ada transaksi.</div>`;
@@ -668,28 +751,15 @@ function renderTable() {
     return;
   }
 
-  // ===== Hitung summary dari SEMUA data =====
-  let totalMasuk = 0, totalKeluar = 0, countMasuk = 0, countKeluar = 0;
-  dataKas.forEach(item => {
-    const masuk = Number(item.pemasukan) || 0;
-    const keluar = Number(item.pengeluaran) || 0;
-    totalMasuk += masuk;
-    totalKeluar += keluar;
-    if (masuk > 0) countMasuk++;
-    if (keluar > 0) countKeluar++;
-  });
+  // ===== Hitung summary & saldo di JS =====
+  const summary = computeSummary();
 
-  // Saldo akhir diambil dari data terbaru (sorted) atau saldo terakhir di data
-  const sortedAll = getSortedData();
-  const lastSaldo = Number(sortedAll[0]?.saldo || sortedAll[0]?.Saldo) || 0;
-
-  document.getElementById('totalMasuk').textContent = formatRupiah(totalMasuk);
-  document.getElementById('totalKeluar').textContent = formatRupiah(totalKeluar);
-  document.getElementById('totalSaldo').textContent = formatRupiah(lastSaldo);
-  document.getElementById('countMasuk').textContent
-  document.getElementById('countMasuk').textContent = countMasuk + ' transaksi';
-  document.getElementById('countKeluar').textContent = countKeluar + ' transaksi';
-  document.getElementById('countTotal').textContent = dataKas.length + ' transaksi';
+  document.getElementById('totalMasuk').textContent  = formatRupiah(summary.totalMasuk);
+  document.getElementById('totalKeluar').textContent = formatRupiah(summary.totalKeluar);
+  document.getElementById('totalSaldo').textContent  = formatRupiah(summary.finalSaldo);
+  document.getElementById('countMasuk').textContent  = summary.countMasuk + ' transaksi';
+  document.getElementById('countKeluar').textContent = summary.countKeluar + ' transaksi';
+  document.getElementById('countTotal').textContent  = summary.countTotal + ' transaksi';
 
   // ===== Render desktop table =====
   const visible = getVisibleData();
@@ -698,7 +768,7 @@ function renderTable() {
   visible.forEach((item, idx) => {
     const masuk = Number(item.pemasukan) || 0;
     const keluar = Number(item.pengeluaran) || 0;
-    const saldo = Number(item.saldo) || Number(item.Saldo) || 0;
+    const saldo = summary.saldoMap.get(String(item.id)) || 0;
 
     rows += `
       <tr>
@@ -725,7 +795,7 @@ function renderTable() {
   visible.forEach((item, idx) => {
     const masuk = Number(item.pemasukan) || 0;
     const keluar = Number(item.pengeluaran) || 0;
-    const saldo = Number(item.saldo) || Number(item.Saldo) || 0;
+    const saldo = summary.saldoMap.get(String(item.id)) || 0;
 
     cards += `
       <div class="tx-card">
