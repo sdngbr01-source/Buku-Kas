@@ -278,7 +278,7 @@
     border-top: 2px solid #cfe3f5;
   }
 
-  .text-right, td, .value, .tx-amt .val, .tx-card-saldo strong {
+  .text-right, td, .value {
     font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
   }
 
@@ -325,65 +325,50 @@
   .btn-cancel { background: #e2e8f0; color: #334155; flex: 1; }
   .btn-cancel:hover { background: #cbd5e1; }
 
-  /* ===== MOBILE ===== */
-  .mobile-cards { display: none; }
-
+  /* ===== MOBILE (tabel tetap dipakai, hanya dikecilkan) ===== */
   @media (max-width: 768px) {
-    body { padding: 12px; }
-    .container { border-radius: 20px; }
-    .header { padding: 22px 18px; }
+    body { padding: 10px; }
+    .container { border-radius: 16px; }
+    .header { padding: 20px 16px; }
     .header-text h1 { font-size: 18px; }
     .header-text p { font-size: 12px; }
-    .filter-bar { padding: 13px 18px; gap: 9px; }
+    .filter-bar { padding: 12px 14px; gap: 9px; }
+    .filter-bar label { font-size: 12px; }
     .filter-bar select { font-size: 13px; padding: 9px 34px 9px 12px; }
     .btn-cetak { margin-left: 0; width: 100%; justify-content: center; }
-    .summary { padding: 16px; gap: 12px; grid-template-columns: 1fr 1fr; }
-    .summary-card { padding: 16px; }
-    .summary-card .value { font-size: 19px; }
-    .summary-card .icon { width: 38px; height: 38px; font-size: 18px; right: 12px; top: 12px; }
+    .summary { padding: 14px; gap: 10px; grid-template-columns: 1fr 1fr; }
+    .summary-card { padding: 14px; }
+    .summary-card .value { font-size: 17px; }
+    .summary-card .icon { width: 34px; height: 34px; font-size: 16px; right: 10px; top: 10px; }
     .summary-card .sub { font-size: 10px; }
-    .form-section { padding: 20px 18px; }
+    .summary-card label { font-size: 10px; }
+    .form-section { padding: 18px 14px; }
     .form-grid { grid-template-columns: 1fr; }
     .form-grid .uraian-field { grid-column: span 1; }
-    .table-section { padding: 18px; }
+    .table-section { padding: 14px; }
     .table-header h2 { font-size: 14px; }
 
-    .table-wrap { display: none; }
-    .mobile-cards { display: flex; flex-direction: column; gap: 12px; }
-
-    .tx-card {
-      background: #fff; border: 1px solid #e6eef8; border-radius: 16px;
-      padding: 15px 17px; box-shadow: var(--shadow-sm); position: relative;
-      animation: fadeUp 0.3s ease both;
+    /* Tabel dibuat lebih compact di mobile */
+    .table-wrap {
+      border-radius: 12px;
+      -webkit-overflow-scrolling: touch;
     }
-    .tx-card.card-saldo-awal {
-      background: linear-gradient(180deg,#f0f7ff,#e6f1fe); border-color: #cfe3f5;
+    table { font-size: 12px; }
+    th {
+      padding: 10px 8px; font-size: 10px; letter-spacing: 0.3px;
     }
-    .tx-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-    .tx-card-no {
-      background: #eff6ff; color: var(--primary); font-size: 11px; font-weight: 800;
-      padding: 4px 10px; border-radius: 10px; flex-shrink: 0;
+    td {
+      padding: 10px 8px; font-size: 12px;
     }
-    .tx-card-date { font-size: 12px; color: #94a3b8; font-weight: 700; }
-    .tx-card-uraian { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 5px; word-break: break-word; }
-    .tx-card-pj { font-size: 12px; color: #94a3b8; margin-bottom: 11px; font-weight: 600; }
-    .tx-card-amounts {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-      padding-top: 11px; border-top: 1px dashed #e6eef8;
+    /* Kolom PJ disembunyikan di mobile agar tidak terlalu lebar */
+    .col-pj, th.col-pj { display: none; }
+    /* Tombol aksi jadi lebih kecil & vertikal */
+    .btn-edit, .btn-danger {
+      padding: 5px 9px; font-size: 10.5px; margin-right: 0; display: block; width: 100%;
     }
-    .tx-amt label { display: block; font-size: 10px; text-transform: uppercase; color: #94a3b8; font-weight: 800; letter-spacing: .5px; margin-bottom: 3px; }
-    .tx-amt .val { font-size: 14px; font-weight: 800; }
-    .tx-amt.masuk .val { color: #059669; }
-    .tx-amt.keluar .val { color: #e11d48; }
-    .tx-card-saldo {
-      margin-top: 11px; padding-top: 11px; border-top: 1px dashed #e6eef8;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .tx-card-saldo span { font-size: 12px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: .5px; }
-    .tx-card-saldo strong { font-size: 16px; color: #b45309; }
-    .tx-card-actions { margin-top: 12px; display: flex; gap: 8px; }
-    .tx-card-actions button { flex: 1; padding: 10px; font-size: 13px; }
-    .tx-card-actions .lock { flex: 1; text-align: center; color: #cbd5e1; font-size: 13px; padding: 10px; font-weight: 600; }
+    .btn-edit { margin-bottom: 4px; }
+    .aksi-cell { white-space: nowrap; }
+    .row-saldo-awal td { font-size: 11px; }
   }
 </style>
 </head>
@@ -394,7 +379,7 @@
   <div class="header">
     <div class="header-text">
       <div class="eyebrow">📘 Buku Kas Digital</div>
-       <h1>📒 Buku Kas Keuangan <span>Mahardika</span></h1>
+      <h1>📒 Buku Kas Keuangan <span>Mahardika</span></h1>
       <p>Buku Kas Digital, Terintegrasi, Efisien, Realtime, dan Akuntabel</p>
     </div>
     <div class="header-actions">
@@ -483,7 +468,7 @@
             <th class="text-right">Debet</th>
             <th class="text-right">Kredit</th>
             <th class="text-right">Saldo</th>
-            <th>PJ</th>
+            <th class="col-pj">PJ</th>
             <th class="text-center" id="aksiHeader">Aksi</th>
           </tr>
         </thead>
@@ -491,10 +476,6 @@
           <tr><td colspan="8" class="empty-state">Memuat data...</td></tr>
         </tbody>
       </table>
-    </div>
-
-    <div class="mobile-cards" id="mobileCards">
-      <div class="empty-state">Memuat data...</div>
     </div>
   </div>
 </div>
@@ -801,8 +782,6 @@ async function loadData() {
     setStatus('⚠ Gagal terhubung', 'error');
     document.getElementById('tbody').innerHTML =
       `<tr><td colspan="8" class="empty-state">Gagal memuat data. Periksa konfigurasi API.<br><small>${err.message}</small></td></tr>`;
-    document.getElementById('mobileCards').innerHTML =
-      `<div class="empty-state">Gagal memuat data.<br><small>${err.message}</small></div>`;
   }
 }
 
@@ -913,11 +892,10 @@ function toggleShowAll() {
 }
 
 // ============================================
-// RENDER
+// RENDER (hanya tabel — desktop & mobile sama)
 // ============================================
 function renderTable() {
   const tbody = document.getElementById('tbody');
-  const mobileCards = document.getElementById('mobileCards');
   const aksiHeader = document.getElementById('aksiHeader');
   const btnToggleAll = document.getElementById('btnToggleAll');
 
@@ -938,7 +916,6 @@ function renderTable() {
 
   if (!filteredCount) {
     tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Belum ada transaksi pada ${labelBulan(filterBulan)}.</td></tr>`;
-    mobileCards.innerHTML = `<div class="empty-state">Belum ada transaksi pada ${labelBulan(filterBulan)}.</div>`;
     document.getElementById('totalMasuk').textContent = 'Rp 0';
     document.getElementById('totalKeluar').textContent = 'Rp 0';
     document.getElementById('totalSaldo').textContent = formatRupiah(getSaldoBulanSebelumnya());
@@ -974,8 +951,8 @@ function renderTable() {
         <td class="text-right ${masuk ? 'masuk-text' : ''}">${masuk ? formatRupiah(masuk) : '-'}</td>
         <td class="text-right ${keluar ? 'keluar-text' : ''}">${keluar ? formatRupiah(keluar) : '-'}</td>
         <td class="text-right saldo-text">${formatRupiah(saldo)}</td>
-        <td>${item.pj || '-'}</td>
-        <td class="text-center">
+        <td class="col-pj">${item.pj || '-'}</td>
+        <td class="text-center aksi-cell">
           ${isLoggedIn ? `
             <button class="btn-edit" onclick="editTransaksi('${item.id}')">Edit</button>
             <button class="btn-danger" onclick="hapusTransaksi('${item.id}')">Hapus</button>
@@ -995,73 +972,13 @@ function renderTable() {
           <td class="text-right">-</td>
           <td class="text-right">-</td>
           <td class="text-right">${formatRupiah(summary.saldoBulanLalu)}</td>
-          <td>-</td>
-          <td class="text-center">—</td>
+          <td class="col-pj">-</td>
+          <td class="text-center aksi-cell">—</td>
         </tr>`;
     }
   }
 
   tbody.innerHTML = rows;
-
-  let cards = '';
-
-  visible.forEach((item, idx) => {
-    const masuk = Number(item.pemasukan) || 0;
-    const keluar = Number(item.pengeluaran) || 0;
-    const saldo = summary.saldoMap.get(String(item.id)) || 0;
-    const nomor = idx + 1 + (hasSaldoAwal ? 1 : 0);
-
-    cards += `
-      <div class="tx-card">
-        <div class="tx-card-top">
-          <span class="tx-card-no">#${nomor}</span>
-          <span class="tx-card-date">📅 ${formatTanggal(item.tanggal)}</span>
-        </div>
-        <div class="tx-card-uraian">${item.uraian || '-'}</div>
-        <div class="tx-card-pj">👤 PJ: ${item.pj || '-'}</div>
-        <div class="tx-card-amounts">
-          <div class="tx-amt masuk">
-            <label>Debet</label>
-            <div class="val">${masuk ? formatRupiah(masuk) : '-'}</div>
-          </div>
-          <div class="tx-amt keluar">
-            <label>Kredit</label>
-            <div class="val">${keluar ? formatRupiah(keluar) : '-'}</div>
-          </div>
-        </div>
-        <div class="tx-card-saldo">
-          <span>Saldo</span>
-          <strong>${formatRupiah(saldo)}</strong>
-        </div>
-        <div class="tx-card-actions">
-          ${isLoggedIn ? `
-            <button class="btn-edit" onclick="editTransaksi('${item.id}')">Edit</button>
-            <button class="btn-danger" onclick="hapusTransaksi('${item.id}')">Hapus</button>
-          ` : '<span class="lock">🔒 Login untuk kelola</span>'}
-        </div>
-      </div>`;
-  });
-
-  if (hasSaldoAwal) {
-    const info = getInfoSaldoAwal();
-    if (info) {
-      cards += `
-        <div class="tx-card card-saldo-awal">
-          <div class="tx-card-top">
-            <span class="tx-card-no">#1</span>
-            <span class="tx-card-date">📅 ${formatTanggal(info.tanggalStr)}</span>
-          </div>
-          <div class="tx-card-uraian">${info.uraian}</div>
-          <div class="tx-card-pj">Saldo penutup buku bulan sebelumnya</div>
-          <div class="tx-card-saldo">
-            <span>Saldo</span>
-            <strong>${formatRupiah(summary.saldoBulanLalu)}</strong>
-          </div>
-        </div>`;
-    }
-  }
-
-  mobileCards.innerHTML = cards;
 }
 
 // ============================================
