@@ -4,163 +4,207 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buku Kas - Mahardika</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --ink: #1e293b;
+    --ink-soft: #64748b;
+    --line: #e6edf6;
+    --bg: #f0f5fc;
+    --primary: #2563eb;
+    --primary-2: #06b6d4;
+    --green: #10b981;
+    --red: #f43f5e;
+    --amber: #f59e0b;
+    --blue: #0984e3;
+    --radius: 18px;
+    --shadow-sm: 0 2px 10px rgba(15,32,60,0.06);
+    --shadow-md: 0 10px 30px rgba(15,32,60,0.10);
+    --shadow-lg: 0 30px 80px rgba(15,32,60,0.30);
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #6dd5ed 100%);
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', Tahoma, sans-serif;
+    background: radial-gradient(1200px 600px at 10% 0%, #2a5298 0%, transparent 55%),
+                radial-gradient(1000px 700px at 100% 20%, #6dd5ed 0%, transparent 50%),
+                linear-gradient(135deg, #0f2027 0%, #1e3c72 45%, #2a5298 100%);
+    background-attachment: fixed;
     min-height: 100vh;
-    padding: 20px;
+    padding: 24px;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
   }
   .container {
     max-width: 1200px;
     margin: 0 auto;
     background: #fff;
-    border-radius: 18px;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg);
     overflow: hidden;
+    animation: fadeUp 0.5s ease both;
   }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
-  /* HEADER */
+  /* ===== HEADER ===== */
   .header {
-    background: linear-gradient(120deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    background: linear-gradient(120deg, #0b1f2a 0%, #16324a 55%, #1f4d68 100%);
     color: #fff;
-    padding: 28px 30px;
+    padding: 30px 32px;
     position: relative;
     overflow: hidden;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 16px;
   }
-  .header::after {
-    content: '💰';
+  .header::before {
+    content: '';
     position: absolute;
-    right: 25px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 70px;
-    opacity: 0.12;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(109,213,237,0.28), transparent 70%);
+    top: -120px; right: -60px;
     pointer-events: none;
   }
-  .header-text h1 { font-size: 24px; margin-bottom: 6px; letter-spacing: 0.3px; position: relative; z-index: 2; }
-  .header-text h1 span { color: #6dd5ed; }
-  .header-text p { opacity: 0.85; font-size: 14px; position: relative; z-index: 2; }
+  .header::after {
+    content: '';
+    position: absolute;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16,185,129,0.22), transparent 70%);
+    bottom: -100px; left: 30%;
+    pointer-events: none;
+  }
+  .header-text { position: relative; z-index: 2; }
+  .header-text .eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+    color: #7ce0f2; background: rgba(109,213,237,0.12);
+    border: 1px solid rgba(109,213,237,0.3);
+    padding: 5px 12px; border-radius: 20px; margin-bottom: 12px;
+  }
+  .header-text h1 { font-size: 25px; line-height: 1.3; font-weight: 800; letter-spacing: -0.2px; }
+  .header-text h1 span {
+    background: linear-gradient(90deg, #6dd5ed, #a7f3d0);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .header-text p { opacity: 0.78; font-size: 13.5px; margin-top: 6px; font-weight: 500; }
   .header-actions { position: relative; z-index: 2; }
   .btn-login {
-    background: linear-gradient(135deg, #00b894, #00cec9);
-    color: #fff; padding: 10px 22px; border: none; border-radius: 25px;
-    font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;
-    box-shadow: 0 4px 15px rgba(0,206,201,0.4);
-  }
-  .btn-login:hover { transform: translateY(-2px); box-shadow: 0 7px 20px rgba(0,206,201,0.55); }
-  .user-badge {
     display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(255,255,255,0.12); padding: 8px 16px; border-radius: 25px;
-    font-size: 13px; border: 1px solid rgba(255,255,255,0.25);
+    background: linear-gradient(135deg, #00b894, #00cec9);
+    color: #fff; padding: 11px 22px; border: none; border-radius: 30px;
+    font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
+    box-shadow: 0 6px 20px rgba(0,206,201,0.45);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0,206,201,0.6); }
+  .user-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.10); padding: 9px 16px; border-radius: 30px;
+    font-size: 13px; border: 1px solid rgba(255,255,255,0.22); font-weight: 600;
+    backdrop-filter: blur(6px);
   }
   .btn-logout {
-    background: rgba(255,255,255,0.15); color: #fff; padding: 5px 12px; font-size: 12px;
-    border: 1px solid rgba(255,255,255,0.3); margin-left: 8px; border-radius: 20px;
-    cursor: pointer; font-weight: 600; transition: background 0.2s;
+    background: rgba(255,255,255,0.16); color: #fff; padding: 6px 14px; font-size: 12px;
+    border: 1px solid rgba(255,255,255,0.3); border-radius: 20px;
+    cursor: pointer; font-weight: 700; transition: background 0.2s; font-family: inherit;
   }
-  .btn-logout:hover { background: rgba(255,255,255,0.3); }
+  .btn-logout:hover { background: rgba(255,255,255,0.32); }
 
-  /* FILTER BAR */
+  /* ===== FILTER BAR ===== */
   .filter-bar {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
-    padding: 15px 30px; background: #eef2f7; border-bottom: 1px solid #dde4ee;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+    padding: 16px 32px;
+    background: linear-gradient(180deg, #f7faff, #eef4fc);
+    border-bottom: 1px solid var(--line);
   }
-  .filter-bar label { font-size: 13px; font-weight: 700; color: #4a5568; }
+  .filter-bar label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 700; color: #475569;
+  }
+  .filter-wrap { position: relative; }
+  .filter-wrap::after {
+    content: '▾'; position: absolute; right: 13px; top: 50%;
+    transform: translateY(-50%); color: var(--primary); font-size: 12px; pointer-events: none;
+  }
   .filter-bar select {
-    padding: 9px 14px; border: 1px solid #c9d6e8; border-radius: 9px;
-    font-size: 14px; font-weight: 600; color: #2c3e50; background: #fff; cursor: pointer;
+    appearance: none; -webkit-appearance: none;
+    padding: 10px 38px 10px 15px; border: 2px solid #d6e2f3; border-radius: 12px;
+    font-size: 14px; font-weight: 700; color: #1e3a8a; background: #fff; cursor: pointer;
+    font-family: inherit; transition: border 0.2s, box-shadow 0.2s;
   }
-  .filter-bar select:focus { outline: none; border-color: #2a5298; }
+  .filter-bar select:hover { border-color: #9dc0ec; }
+  .filter-bar select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.12); }
   .btn-cetak {
     margin-left: auto;
-    background: linear-gradient(135deg, #00b894, #00cec9);
-    color: #fff; padding: 9px 20px; border: none; border-radius: 9px;
-    font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(0,184,148,0.35);
-    display: inline-flex; align-items: center; gap: 6px;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: #fff; padding: 10px 20px; border: none; border-radius: 12px;
+    font-size: 13.5px; font-weight: 700; cursor: pointer; font-family: inherit;
+    box-shadow: 0 6px 18px rgba(16,185,129,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
   }
-  .btn-cetak:hover { transform: translateY(-2px); box-shadow: 0 7px 18px rgba(0,184,148,0.5); }
+  .btn-cetak:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(16,185,129,0.55); }
 
-  /* SUMMARY CARDS */
+  /* ===== SUMMARY ===== */
   .summary {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 18px;
-    padding: 25px 30px;
-    background: #f4f7fb;
-    border-bottom: 1px solid #e0e0e0;
+    padding: 26px 32px;
+    background: #f7faff;
+    border-bottom: 1px solid var(--line);
   }
   .summary-card {
     background: #fff;
     padding: 22px 24px;
-    border-radius: 14px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
     position: relative;
     overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.22s, box-shadow 0.22s;
+    border: 1px solid #eef3fb;
   }
-  .summary-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+  .summary-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .summary-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  }
+  .summary-card.masuk::before { background: linear-gradient(180deg, #34d399, #059669); }
+  .summary-card.keluar::before { background: linear-gradient(180deg, #fb7185, #e11d48); }
+  .summary-card.saldo::before { background: linear-gradient(180deg, #fbbf24, #d97706); }
   .summary-card .icon {
-    position: absolute;
-    right: 18px;
-    top: 18px;
-    font-size: 38px;
-    opacity: 0.16;
+    position: absolute; right: 18px; top: 16px;
+    width: 46px; height: 46px; border-radius: 13px;
+    display: grid; place-items: center; font-size: 22px;
   }
-  .summary-card.masuk { border-left: 5px solid #00b894; }
-  .summary-card.keluar { border-left: 5px solid #e17055; }
-  .summary-card.saldo { border-left: 5px solid #fdcb6e; }
-  .summary-card label { font-size: 12px; color: #777; text-transform: uppercase; letter-spacing: 0.7px; font-weight: 700; }
-  .summary-card .value { font-size: 25px; font-weight: 800; margin-top: 6px; }
-  .summary-card.masuk .value { color: #00b894; }
-  .summary-card.keluar .value { color: #e17055; }
-  .summary-card.saldo .value { color: #d68910; }
-  .summary-card .sub { font-size: 11px; color: #999; margin-top: 5px; }
+  .summary-card.masuk .icon { background: #e7faf2; }
+  .summary-card.keluar .icon { background: #feeef1; }
+  .summary-card.saldo .icon { background: #fef6e3; }
+  .summary-card label {
+    font-size: 11.5px; color: var(--ink-soft); text-transform: uppercase;
+    letter-spacing: 0.9px; font-weight: 800;
+  }
+  .summary-card .value { font-size: 26px; font-weight: 800; margin-top: 8px; letter-spacing: -0.3px; }
+  .summary-card.masuk .value { color: #059669; }
+  .summary-card.keluar .value { color: #e11d48; }
+  .summary-card.saldo .value { color: #b45309; }
+  .summary-card .sub { font-size: 11.5px; color: #94a3b8; margin-top: 6px; font-weight: 600; }
 
-  /* LOGIN MODAL */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(15,32,39,0.75);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 999; padding: 20px; backdrop-filter: blur(4px);
-  }
-  .modal-box {
-    background: #fff; border-radius: 16px; padding: 35px 30px;
-    max-width: 400px; width: 100%; text-align: center;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.4);
-    animation: popIn 0.25s ease;
-  }
-  @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .modal-box h2 { font-size: 20px; color: #2c3e50; margin-bottom: 6px; }
-  .modal-box p { color: #888; font-size: 13px; margin-bottom: 22px; }
-  .modal-box input {
-    width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0;
-    border-radius: 10px; font-size: 16px; text-align: center;
-    letter-spacing: 1px; transition: border 0.2s; margin-bottom: 12px;
-  }
-  .modal-box input:focus { outline: none; border-color: #2a5298; }
-  .login-error { color: #e17055; font-size: 13px; min-height: 18px; margin-bottom: 12px; font-weight: 600; }
-  .modal-btns { display: flex; gap: 10px; }
-  .btn { padding: 11px 20px; border: none; border-radius: 9px; cursor: pointer; font-size: 14px; font-weight: 700; transition: all 0.2s; }
-  .btn-primary { background: linear-gradient(135deg, #2a5298 0%, #6dd5ed 100%); color: #fff; flex: 1; }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(42,82,152,0.4); }
-  .btn-cancel { background: #dfe6e9; color: #2d3436; flex: 1; }
-  .btn-cancel:hover { background: #b2bec3; }
-
-  /* FORM */
+  /* ===== FORM ===== */
   .form-section {
-    padding: 25px 30px;
+    padding: 26px 32px;
     background: #fff;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--line);
   }
-  .form-section h2 { font-size: 16px; color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-  .edit-tag { background: #fdcb6e; color: #6b4e00; font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 700; }
+  .form-section h2 {
+    font-size: 16px; color: var(--ink); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 9px; font-weight: 800;
+  }
+  .edit-tag { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #4a2c00; font-size: 11px; padding: 4px 12px; border-radius: 12px; font-weight: 800; }
   .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -168,139 +212,178 @@
   }
   .form-grid .uraian-field { grid-column: span 2; }
   .form-grid input, .form-grid select {
-    padding: 11px 13px; border: 1px solid #ddd; border-radius: 9px;
-    font-size: 14px; transition: border 0.2s, box-shadow 0.2s; background: #fbfcfe;
-    width: 100%;
+    padding: 12px 14px; border: 2px solid #e2e8f0; border-radius: 12px;
+    font-size: 14px; transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+    background: #f8fafc; width: 100%; font-family: inherit; font-weight: 600; color: var(--ink);
   }
+  .form-grid input::placeholder { color: #94a3b8; font-weight: 500; }
   .form-grid input:focus, .form-grid select:focus {
-    outline: none; border-color: #2a5298;
-    box-shadow: 0 0 0 3px rgba(42,82,152,0.12); background: #fff;
+    outline: none; border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.12); background: #fff;
   }
   .btn-submit {
-    background: linear-gradient(135deg, #2a5298 0%, #6dd5ed 100%);
-    color: #fff; width: 100%; padding: 11px 20px; border: none; border-radius: 9px;
-    cursor: pointer; font-size: 14px; font-weight: 700; transition: all 0.2s;
+    background: linear-gradient(135deg, #2563eb, #06b6d4);
+    color: #fff; width: 100%; padding: 12px 20px; border: none; border-radius: 12px;
+    cursor: pointer; font-size: 14px; font-weight: 800; transition: transform 0.2s, box-shadow 0.2s;
+    font-family: inherit; letter-spacing: 0.2px;
   }
-  .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(42,82,152,0.4); }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(37,99,235,0.4); }
   .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-  .btn-cancel-edit { background: #dfe6e9; color: #2d3436; padding: 11px 20px; border: none; border-radius: 9px; cursor: pointer; font-size: 14px; font-weight: 700; }
-  .btn-cancel-edit:hover { background: #b2bec3; }
+  .btn-cancel-edit {
+    background: #e2e8f0; color: #334155; padding: 12px 20px; border: none; border-radius: 12px;
+    cursor: pointer; font-size: 14px; font-weight: 800; font-family: inherit; transition: background 0.2s;
+  }
+  .btn-cancel-edit:hover { background: #cbd5e1; }
 
-  /* TABLE */
-  .table-section { padding: 20px 30px 30px; }
+  /* ===== TABLE ===== */
+  .table-section { padding: 22px 32px 34px; }
   .table-header {
     display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 15px; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
   }
-  .table-header h2 { font-size: 16px; color: #2c3e50; }
+  .table-header h2 { font-size: 16px; color: var(--ink); font-weight: 800; display: flex; align-items: center; gap: 8px; }
   .table-header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .status { font-size: 13px; padding: 6px 14px; border-radius: 20px; font-weight: 600; }
-  .status.loading { background: #fff3cd; color: #856404; }
-  .status.ok { background: #d4edda; color: #155724; }
-  .status.error { background: #f8d7da; color: #721c24; }
+  .status { font-size: 12.5px; padding: 7px 15px; border-radius: 20px; font-weight: 700; }
+  .status.loading { background: #fef3c7; color: #92400e; }
+  .status.ok { background: #d1fae5; color: #065f46; }
+  .status.error { background: #ffe4e6; color: #9f1239; }
   .btn-toggle-all {
-    background: #eef2f7; color: #2a5298; padding: 6px 14px; font-size: 12px;
-    border: 1px solid #c9d6e8; border-radius: 20px; cursor: pointer; font-weight: 700;
+    background: #eff6ff; color: var(--primary); padding: 7px 16px; font-size: 12.5px;
+    border: 2px solid #dbeafe; border-radius: 20px; cursor: pointer; font-weight: 800;
+    font-family: inherit; transition: background 0.2s;
   }
-  .btn-toggle-all:hover { background: #dbe6f5; }
+  .btn-toggle-all:hover { background: #dbeafe; }
 
-  /* Desktop table */
-  .table-wrap { overflow-x: auto; }
+  .table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--line); }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  thead { background: #eef2f7; }
+  thead { background: linear-gradient(180deg, #f1f6fd, #e8f0fb); }
   th {
-    padding: 13px 10px; text-align: left; font-weight: 700; color: #4a5568;
-    font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px;
+    padding: 14px 12px; text-align: left; font-weight: 800; color: #475569;
+    font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap;
   }
-  td { padding: 11px 10px; border-bottom: 1px solid #eef2f7; color: #333; }
-  tbody tr:hover { background: #f7fafd; }
+  td { padding: 13px 12px; border-bottom: 1px solid #eef3fb; color: #334155; font-weight: 500; }
+  tbody tr { transition: background 0.15s; }
+  tbody tr:hover { background: #f8fbff; }
+  tbody tr:last-child td { border-bottom: none; }
   .text-right { text-align: right; }
   .text-center { text-align: center; }
-  .masuk-text { color: #00b894; font-weight: 700; }
-  .keluar-text { color: #e17055; font-weight: 700; }
-  .saldo-text { color: #d68910; font-weight: 700; }
-  .empty-state { text-align: center; padding: 45px; color: #999; }
+  .masuk-text { color: #059669; font-weight: 800; }
+  .keluar-text { color: #e11d48; font-weight: 800; }
+  .saldo-text { color: #b45309; font-weight: 800; }
+  .empty-state { text-align: center; padding: 50px; color: #94a3b8; font-weight: 600; }
 
-  /* Baris saldo bulan sebelumnya (paling bawah) */
   .row-saldo-awal td {
-    background: #f0f7ff; font-style: italic; font-weight: 700; color: #0984e3;
+    background: linear-gradient(180deg,#f0f7ff,#e6f1fe);
+    font-style: italic; font-weight: 800; color: var(--blue);
     border-top: 2px solid #cfe3f5;
   }
 
-  .btn-edit { background: #ffeaa7; color: #6b4e00; padding: 6px 12px; font-size: 12px; margin-right: 5px; border: none; border-radius: 7px; cursor: pointer; font-weight: 700; }
-  .btn-edit:hover { background: #fdcb6e; }
-  .btn-danger { background: #e17055; color: #fff; padding: 6px 12px; font-size: 12px; border: none; border-radius: 7px; cursor: pointer; font-weight: 700; }
-  .btn-danger:hover { background: #d63031; }
+  .text-right, td, .value, .tx-amt .val, .tx-card-saldo strong {
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
+  }
+
+  .btn-edit {
+    background: linear-gradient(135deg,#fde68a,#fbbf24); color: #4a2c00;
+    padding: 7px 13px; font-size: 12px; margin-right: 6px; border: none; border-radius: 9px;
+    cursor: pointer; font-weight: 800; font-family: inherit; transition: transform 0.15s;
+  }
+  .btn-edit:hover { transform: translateY(-1px); }
+  .btn-danger {
+    background: linear-gradient(135deg,#fb7185,#f43f5e); color: #fff;
+    padding: 7px 13px; font-size: 12px; border: none; border-radius: 9px;
+    cursor: pointer; font-weight: 800; font-family: inherit; transition: transform 0.15s;
+  }
+  .btn-danger:hover { transform: translateY(-1px); }
 
   .hidden { display: none !important; }
 
-  /* ===== MOBILE CARD LAYOUT ===== */
+  /* ===== LOGIN MODAL ===== */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(10,20,35,0.72);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999; padding: 20px; backdrop-filter: blur(6px);
+  }
+  .modal-box {
+    background: #fff; border-radius: 22px; padding: 36px 30px;
+    max-width: 400px; width: 100%; text-align: center;
+    box-shadow: var(--shadow-lg); animation: popIn 0.28s cubic-bezier(.2,.9,.3,1.3);
+  }
+  @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-box h2 { font-size: 21px; color: var(--ink); margin-bottom: 6px; font-weight: 800; }
+  .modal-box p { color: var(--ink-soft); font-size: 13px; margin-bottom: 22px; font-weight: 500; }
+  .modal-box input {
+    width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 12px;
+    font-size: 16px; text-align: center; letter-spacing: 1px; font-family: inherit;
+    transition: border 0.2s, box-shadow 0.2s; margin-bottom: 12px; font-weight: 700;
+  }
+  .modal-box input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.12); }
+  .login-error { color: #e11d48; font-size: 13px; min-height: 18px; margin-bottom: 12px; font-weight: 700; }
+  .modal-btns { display: flex; gap: 10px; }
+  .btn { padding: 12px 20px; border: none; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 800; transition: transform 0.2s, box-shadow 0.2s; font-family: inherit; }
+  .btn-primary { background: linear-gradient(135deg, #2563eb, #06b6d4); color: #fff; flex: 1; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(37,99,235,0.4); }
+  .btn-cancel { background: #e2e8f0; color: #334155; flex: 1; }
+  .btn-cancel:hover { background: #cbd5e1; }
+
+  /* ===== MOBILE ===== */
   .mobile-cards { display: none; }
 
   @media (max-width: 768px) {
-    body { padding: 10px; }
-    .header { padding: 20px 16px; }
-    .header-text h1 { font-size: 17px; line-height: 1.35; }
+    body { padding: 12px; }
+    .container { border-radius: 20px; }
+    .header { padding: 22px 18px; }
+    .header-text h1 { font-size: 18px; }
     .header-text p { font-size: 12px; }
-    .filter-bar { padding: 12px 16px; }
-    .filter-bar select { font-size: 13px; padding: 8px 10px; }
+    .filter-bar { padding: 13px 18px; gap: 9px; }
+    .filter-bar select { font-size: 13px; padding: 9px 34px 9px 12px; }
     .btn-cetak { margin-left: 0; width: 100%; justify-content: center; }
     .summary { padding: 16px; gap: 12px; grid-template-columns: 1fr 1fr; }
     .summary-card { padding: 16px; }
-    .summary-card .value { font-size: 18px; }
+    .summary-card .value { font-size: 19px; }
+    .summary-card .icon { width: 38px; height: 38px; font-size: 18px; right: 12px; top: 12px; }
     .summary-card .sub { font-size: 10px; }
-    .summary-card .icon { font-size: 28px; right: 12px; top: 12px; }
-    .form-section { padding: 18px 16px; }
+    .form-section { padding: 20px 18px; }
     .form-grid { grid-template-columns: 1fr; }
     .form-grid .uraian-field { grid-column: span 1; }
-    .table-section { padding: 16px; }
+    .table-section { padding: 18px; }
     .table-header h2 { font-size: 14px; }
 
     .table-wrap { display: none; }
     .mobile-cards { display: flex; flex-direction: column; gap: 12px; }
 
     .tx-card {
-      background: #fff;
-      border: 1px solid #e4eaf2;
-      border-radius: 12px;
-      padding: 14px 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      position: relative;
+      background: #fff; border: 1px solid #e6eef8; border-radius: 16px;
+      padding: 15px 17px; box-shadow: var(--shadow-sm); position: relative;
+      animation: fadeUp 0.3s ease both;
     }
     .tx-card.card-saldo-awal {
-      background: #f0f7ff; border-color: #cfe3f5;
+      background: linear-gradient(180deg,#f0f7ff,#e6f1fe); border-color: #cfe3f5;
     }
-    .tx-card-top {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      gap: 10px; margin-bottom: 8px;
-    }
+    .tx-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
     .tx-card-no {
-      background: #eef2f7; color: #4a5568; font-size: 11px; font-weight: 700;
-      padding: 3px 9px; border-radius: 10px; flex-shrink: 0;
+      background: #eff6ff; color: var(--primary); font-size: 11px; font-weight: 800;
+      padding: 4px 10px; border-radius: 10px; flex-shrink: 0;
     }
-    .tx-card-date { font-size: 12px; color: #888; font-weight: 600; }
-    .tx-card-uraian {
-      font-size: 15px; font-weight: 700; color: #2c3e50;
-      margin-bottom: 6px; word-break: break-word;
-    }
-    .tx-card-pj { font-size: 12px; color: #888; margin-bottom: 10px; }
+    .tx-card-date { font-size: 12px; color: #94a3b8; font-weight: 700; }
+    .tx-card-uraian { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 5px; word-break: break-word; }
+    .tx-card-pj { font-size: 12px; color: #94a3b8; margin-bottom: 11px; font-weight: 600; }
     .tx-card-amounts {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-      padding-top: 10px; border-top: 1px dashed #e4eaf2;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      padding-top: 11px; border-top: 1px dashed #e6eef8;
     }
-    .tx-amt label { display: block; font-size: 10px; text-transform: uppercase; color: #999; font-weight: 700; letter-spacing: .4px; margin-bottom: 2px; }
+    .tx-amt label { display: block; font-size: 10px; text-transform: uppercase; color: #94a3b8; font-weight: 800; letter-spacing: .5px; margin-bottom: 3px; }
     .tx-amt .val { font-size: 14px; font-weight: 800; }
-    .tx-amt.masuk .val { color: #00b894; }
-    .tx-amt.keluar .val { color: #e17055; }
+    .tx-amt.masuk .val { color: #059669; }
+    .tx-amt.keluar .val { color: #e11d48; }
     .tx-card-saldo {
-      margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e4eaf2;
+      margin-top: 11px; padding-top: 11px; border-top: 1px dashed #e6eef8;
       display: flex; justify-content: space-between; align-items: center;
     }
-    .tx-card-saldo span { font-size: 12px; font-weight: 700; color: #777; text-transform: uppercase; letter-spacing: .4px; }
-    .tx-card-saldo strong { font-size: 16px; color: #d68910; }
-    .tx-card-actions { margin-top: 10px; display: flex; gap: 8px; }
-    .tx-card-actions button { flex: 1; padding: 9px; font-size: 13px; }
-    .tx-card-actions .lock { flex: 1; text-align: center; color: #aaa; font-size: 13px; padding: 9px; }
+    .tx-card-saldo span { font-size: 12px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: .5px; }
+    .tx-card-saldo strong { font-size: 16px; color: #b45309; }
+    .tx-card-actions { margin-top: 12px; display: flex; gap: 8px; }
+    .tx-card-actions button { flex: 1; padding: 10px; font-size: 13px; }
+    .tx-card-actions .lock { flex: 1; text-align: center; color: #cbd5e1; font-size: 13px; padding: 10px; font-weight: 600; }
   }
 </style>
 </head>
@@ -310,8 +393,9 @@
   <!-- HEADER -->
   <div class="header">
     <div class="header-text">
-      <h1>📒 Buku Kas Keuangan <span>Mahardika</span></h1>
-      <p>Buku Kas Digital, Terintegrasi, Efisien, Update, dan akuntabel</p>
+      <div class="eyebrow">📘 Buku Kas Digital</div>
+       <h1>📒 Buku Kas Keuangan <span>Mahardika</span></h1>
+      <p>Buku Kas Digital, Terintegrasi, Efisien, Realtime, dan Akuntabel</p>
     </div>
     <div class="header-actions">
       <button class="btn-login" id="btnLoginHeader" onclick="openLogin()">🔐 Login Admin</button>
@@ -326,8 +410,10 @@
 
   <!-- FILTER BAR -->
   <div class="filter-bar">
-    <label for="filterBulan">📅 Filter Bulan:</label>
-    <select id="filterBulan" onchange="onFilterChange()"></select>
+    <label for="filterBulan">📅 Filter Bulan</label>
+    <div class="filter-wrap">
+      <select id="filterBulan" onchange="onFilterChange()"></select>
+    </div>
     <button class="btn-cetak" onclick="cetakExcel()">📥 Cetak Excel</button>
   </div>
 
@@ -359,7 +445,7 @@
     <form id="formKas" class="form-grid">
       <input type="hidden" id="editId">
       <input type="date" id="tanggal" required>
-      <input type="text" id="uraian" class="uraian-field" placeholder="Uraian" required>
+      <input type="text" id="uraian" class="uraian-field" placeholder="Uraian transaksi" required>
       <select id="jenis" required>
         <option value="">-- Jenis --</option>
         <option value="masuk">Pemasukan (Debet)</option>
@@ -373,8 +459,8 @@
   </div>
 
   <!-- Info login -->
-  <div class="form-section" id="loginHint" style="background:#f8f9fa; text-align:center; color:#666; font-size:14px;">
-    🔒 Ingin menambah, mengedit, atau menghapus transaksi? Silakan <a href="#" onclick="openLogin(); return false;" style="color:#2a5298; font-weight:700; text-decoration:underline;">login sebagai admin</a>.
+  <div class="form-section" id="loginHint" style="background:#f8fafc; text-align:center; color:#64748b; font-size:14px; font-weight:500;">
+    🔒 Ingin menambah, mengedit, atau menghapus transaksi? Silakan <a href="#" onclick="openLogin(); return false;" style="color:#2563eb; font-weight:800; text-decoration:underline;">login sebagai admin</a>.
   </div>
 
   <!-- TABLE -->
@@ -387,7 +473,6 @@
       </div>
     </div>
 
-    <!-- Desktop table -->
     <div class="table-wrap">
       <table>
         <thead>
@@ -408,7 +493,6 @@
       </table>
     </div>
 
-    <!-- Mobile cards -->
     <div class="mobile-cards" id="mobileCards">
       <div class="empty-state">Memuat data...</div>
     </div>
@@ -443,7 +527,7 @@ const INITIAL_LIMIT = 5;
 let dataKas = [];
 let isLoggedIn = false;
 let showAll = false;
-let filterBulan = ''; // 'YYYY-MM' atau 'all'
+let filterBulan = '';
 
 // ============================================
 // UTILITY
@@ -512,9 +596,6 @@ function sortChronological(arr) {
   });
 }
 
-// Info baris saldo bulan sebelumnya:
-// - tanggal 1 bulan filter
-// - uraian "Saldo Bulan <Nama Bulan Sebelumnya>"
 function getInfoSaldoAwal() {
   if (!filterBulan || filterBulan === 'all') return null;
   const [y, m] = filterBulan.split('-').map(Number);
@@ -592,20 +673,18 @@ function getVisibleData() {
 }
 
 // ============================================
-// SALDO BERJALAN KUMULATIF
+// SALDO
 // ============================================
 function computeAllRunningSaldo() {
   const allChrono = sortChronological(dataKas);
   let running = 0;
   const saldoMap = new Map();
-
   allChrono.forEach(item => {
     const masuk = Number(item.pemasukan) || 0;
     const keluar = Number(item.pengeluaran) || 0;
     running += masuk - keluar;
     saldoMap.set(String(item.id), running);
   });
-
   return saldoMap;
 }
 
@@ -625,37 +704,23 @@ function computeSummary() {
   const chrono = getFilteredChronological();
   const allSaldoMap = computeAllRunningSaldo();
 
-  let totalMasuk = 0;
-  let totalKeluar = 0;
-  let countMasuk = 0;
-  let countKeluar = 0;
+  let totalMasuk = 0, totalKeluar = 0, countMasuk = 0, countKeluar = 0;
   const saldoMap = new Map();
 
   chrono.forEach(item => {
     const masuk = Number(item.pemasukan) || 0;
     const keluar = Number(item.pengeluaran) || 0;
-
     totalMasuk += masuk;
     totalKeluar += keluar;
     if (masuk > 0) countMasuk++;
     if (keluar > 0) countKeluar++;
-
     saldoMap.set(String(item.id), allSaldoMap.get(String(item.id)) || 0);
   });
 
   const saldoBulanLalu = getSaldoBulanSebelumnya();
   const finalSaldo = saldoBulanLalu + totalMasuk - totalKeluar;
 
-  return {
-    saldoMap,
-    saldoBulanLalu,
-    finalSaldo,
-    totalMasuk,
-    totalKeluar,
-    countMasuk,
-    countKeluar,
-    countTotal: chrono.length
-  };
+  return { saldoMap, saldoBulanLalu, finalSaldo, totalMasuk, totalKeluar, countMasuk, countKeluar, countTotal: chrono.length };
 }
 
 // ============================================
@@ -667,11 +732,9 @@ function openLogin() {
   document.getElementById('loginError').textContent = '';
   setTimeout(() => document.getElementById('loginInput').focus(), 100);
 }
-
 function closeLogin() {
   document.getElementById('loginModal').classList.add('hidden');
 }
-
 function doLogin() {
   const input = document.getElementById('loginInput').value.trim();
   const errorEl = document.getElementById('loginError');
@@ -684,14 +747,12 @@ function doLogin() {
     errorEl.textContent = '❌ NIP salah. Silakan coba lagi.';
   }
 }
-
 function logout() {
   isLoggedIn = false;
   cancelEdit();
   applyLoginState();
   renderTable();
 }
-
 function applyLoginState() {
   const btnLogin = document.getElementById('btnLoginHeader');
   const userInfo = document.getElementById('userInfo');
@@ -752,19 +813,16 @@ async function simpanTransaksi(transaksi, editId) {
   const btn = document.getElementById('btnSubmit');
   btn.disabled = true;
   btn.textContent = editId ? 'Memperbarui...' : 'Menyimpan...';
-
   try {
     const body = editId
       ? { action: 'update', id: editId, data: transaksi }
       : { action: 'add', data: transaksi };
-
     const res = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(body)
     });
     const json = await res.json();
-
     if (json.status === 'success') {
       await loadData();
       cancelEdit();
@@ -847,7 +905,7 @@ function cancelEdit() {
 }
 
 // ============================================
-// TOGGLE LIHAT SEMUA / RINGKAS
+// TOGGLE
 // ============================================
 function toggleShowAll() {
   showAll = !showAll;
@@ -867,6 +925,7 @@ function renderTable() {
   else aksiHeader.classList.add('hidden');
 
   const filteredCount = getSortedData().length;
+  const hasSaldoAwal = filterBulan && filterBulan !== 'all';
 
   if (filteredCount > INITIAL_LIMIT) {
     btnToggleAll.classList.remove('hidden');
@@ -898,7 +957,6 @@ function renderTable() {
   document.getElementById('countKeluar').textContent = summary.countKeluar + ' transaksi';
   document.getElementById('countTotal').textContent  = summary.countTotal + ' transaksi';
 
-  // ===== Desktop table =====
   const visible = getVisibleData();
   let rows = '';
 
@@ -906,10 +964,11 @@ function renderTable() {
     const masuk = Number(item.pemasukan) || 0;
     const keluar = Number(item.pengeluaran) || 0;
     const saldo = summary.saldoMap.get(String(item.id)) || 0;
+    const nomor = idx + 1 + (hasSaldoAwal ? 1 : 0);
 
     rows += `
       <tr>
-        <td class="text-center">${idx + 1}</td>
+        <td class="text-center">${nomor}</td>
         <td>${formatTanggal(item.tanggal)}</td>
         <td>${item.uraian || '-'}</td>
         <td class="text-right ${masuk ? 'masuk-text' : ''}">${masuk ? formatRupiah(masuk) : '-'}</td>
@@ -925,13 +984,12 @@ function renderTable() {
       </tr>`;
   });
 
-  // Baris saldo bulan sebelumnya — PALING BAWAH
-  if (filterBulan && filterBulan !== 'all') {
+  if (hasSaldoAwal) {
     const info = getInfoSaldoAwal();
     if (info) {
       rows += `
         <tr class="row-saldo-awal">
-          <td class="text-center">—</td>
+          <td class="text-center">1</td>
           <td>${formatTanggal(info.tanggalStr)}</td>
           <td>${info.uraian}</td>
           <td class="text-right">-</td>
@@ -945,18 +1003,18 @@ function renderTable() {
 
   tbody.innerHTML = rows;
 
-  // ===== Mobile cards =====
   let cards = '';
 
   visible.forEach((item, idx) => {
     const masuk = Number(item.pemasukan) || 0;
     const keluar = Number(item.pengeluaran) || 0;
     const saldo = summary.saldoMap.get(String(item.id)) || 0;
+    const nomor = idx + 1 + (hasSaldoAwal ? 1 : 0);
 
     cards += `
       <div class="tx-card">
         <div class="tx-card-top">
-          <span class="tx-card-no">#${idx + 1}</span>
+          <span class="tx-card-no">#${nomor}</span>
           <span class="tx-card-date">📅 ${formatTanggal(item.tanggal)}</span>
         </div>
         <div class="tx-card-uraian">${item.uraian || '-'}</div>
@@ -984,14 +1042,13 @@ function renderTable() {
       </div>`;
   });
 
-  // Card saldo bulan sebelumnya — PALING BAWAH
-  if (filterBulan && filterBulan !== 'all') {
+  if (hasSaldoAwal) {
     const info = getInfoSaldoAwal();
     if (info) {
       cards += `
         <div class="tx-card card-saldo-awal">
           <div class="tx-card-top">
-            <span class="tx-card-no">SALDO</span>
+            <span class="tx-card-no">#1</span>
             <span class="tx-card-date">📅 ${formatTanggal(info.tanggalStr)}</span>
           </div>
           <div class="tx-card-uraian">${info.uraian}</div>
@@ -1042,8 +1099,10 @@ document.getElementById('formKas').addEventListener('submit', async (e) => {
 // ============================================
 function cetakExcel() {
   const chrono = getFilteredChronological();
+  const hasSaldoAwal = filterBulan && filterBulan !== 'all';
+  const info = getInfoSaldoAwal();
 
-  if (!chrono.length) {
+  if (!chrono.length && !hasSaldoAwal) {
     alert('Tidak ada data untuk dicetak pada ' + labelBulan(filterBulan));
     return;
   }
@@ -1051,7 +1110,6 @@ function cetakExcel() {
   const judul = 'Buku Kas Mahardika — ' + labelBulan(filterBulan);
   const allSaldoMap = computeAllRunningSaldo();
   const saldoBulanLalu = getSaldoBulanSebelumnya();
-  const info = getInfoSaldoAwal();
 
   let totalDebet = 0;
   let totalKredit = 0;
@@ -1066,29 +1124,10 @@ function cetakExcel() {
       <th style="background:#eef2f7;border:1px solid #999;padding:6px;">Saldo</th>
     </tr>`;
 
-  chrono.forEach((item, idx) => {
-    const debet = Number(item.pemasukan) || 0;
-    const kredit = Number(item.pengeluaran) || 0;
-    totalDebet += debet;
-    totalKredit += kredit;
-    const saldo = allSaldoMap.get(String(item.id)) || 0;
-
+  if (hasSaldoAwal && info) {
     tableRows += `
       <tr>
-        <td style="border:1px solid #ccc;padding:5px;text-align:center;">${idx + 1}</td>
-        <td style="border:1px solid #ccc;padding:5px;">${formatTanggal(item.tanggal)}</td>
-        <td style="border:1px solid #ccc;padding:5px;">${item.uraian || '-'}</td>
-        <td style="border:1px solid #ccc;padding:5px;text-align:right;">${debet ? debet.toLocaleString('id-ID') : ''}</td>
-        <td style="border:1px solid #ccc;padding:5px;text-align:right;">${kredit ? kredit.toLocaleString('id-ID') : ''}</td>
-        <td style="border:1px solid #ccc;padding:5px;text-align:right;">${saldo.toLocaleString('id-ID')}</td>
-      </tr>`;
-  });
-
-  // Baris saldo bulan sebelumnya — PALING BAWAH
-  if (info) {
-    tableRows += `
-      <tr>
-        <td style="border:1px solid #ccc;padding:5px;text-align:center;background:#f0f7ff;">—</td>
+        <td style="border:1px solid #ccc;padding:5px;text-align:center;background:#f0f7ff;">1</td>
         <td style="border:1px solid #ccc;padding:5px;background:#f0f7ff;">${formatTanggal(info.tanggalStr)}</td>
         <td style="border:1px solid #ccc;padding:5px;font-style:italic;background:#f0f7ff;">${info.uraian}</td>
         <td style="border:1px solid #ccc;padding:5px;background:#f0f7ff;"></td>
@@ -1096,6 +1135,25 @@ function cetakExcel() {
         <td style="border:1px solid #ccc;padding:5px;text-align:right;background:#f0f7ff;font-weight:bold;">${saldoBulanLalu.toLocaleString('id-ID')}</td>
       </tr>`;
   }
+
+  chrono.forEach((item, idx) => {
+    const debet = Number(item.pemasukan) || 0;
+    const kredit = Number(item.pengeluaran) || 0;
+    totalDebet += debet;
+    totalKredit += kredit;
+    const saldo = allSaldoMap.get(String(item.id)) || 0;
+    const nomor = idx + (hasSaldoAwal ? 2 : 1);
+
+    tableRows += `
+      <tr>
+        <td style="border:1px solid #ccc;padding:5px;text-align:center;">${nomor}</td>
+        <td style="border:1px solid #ccc;padding:5px;">${formatTanggal(item.tanggal)}</td>
+        <td style="border:1px solid #ccc;padding:5px;">${item.uraian || '-'}</td>
+        <td style="border:1px solid #ccc;padding:5px;text-align:right;">${debet ? debet.toLocaleString('id-ID') : ''}</td>
+        <td style="border:1px solid #ccc;padding:5px;text-align:right;">${kredit ? kredit.toLocaleString('id-ID') : ''}</td>
+        <td style="border:1px solid #ccc;padding:5px;text-align:right;">${saldo.toLocaleString('id-ID')}</td>
+      </tr>`;
+  });
 
   const saldoAkhir = saldoBulanLalu + totalDebet - totalKredit;
 
